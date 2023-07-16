@@ -3,8 +3,10 @@
 `timescale 1 ns / 1 ps
 
 module top_vga_basys3 (
-    input  wire clk,
-    input  wire btnC,
+    input wire clk,
+    input wire btnC,
+    input wire btnD,
+    input wire btnU,
     output wire Vsync,
     output wire Hsync,
     output wire [3:0] vgaRed,
@@ -14,21 +16,16 @@ module top_vga_basys3 (
 );
 
 
-
 //Local variables and signals
-
 
 wire pclk;
 wire locked;
 wire pclk_mirror;
 
 
-
 //Signals assignments
 
-
 assign JA1 = pclk_mirror;
-
 
 
 //FPGA submodules placement
@@ -51,13 +48,16 @@ ODDR pclk_oddr (
 );
 
 
-
 //Project functional top module
  
 
 top_vga u_top_vga (
+    //inputs
     .clk(pclk),
     .rst(btnC),
+    .btnu(btnU),
+    .btnd(btnD),
+    //outputs
     .r(vgaRed),
     .g(vgaGreen),
     .b(vgaBlue),

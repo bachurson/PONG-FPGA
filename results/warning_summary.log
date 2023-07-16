@@ -1,6 +1,6 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2023-07-12 23:17:05
+Created: 2023-07-16 03:33:24
 
 ----SYNTHESIS----
 WARNING: [Synth 8-7129] Port vga\.rgb[11] in module draw_bg is either unconnected or has no load
@@ -15,31 +15,7 @@ WARNING: [Synth 8-7129] Port vga\.rgb[3] in module draw_bg is either unconnected
 WARNING: [Synth 8-7129] Port vga\.rgb[2] in module draw_bg is either unconnected or has no load
 WARNING: [Synth 8-7129] Port vga\.rgb[1] in module draw_bg is either unconnected or has no load
 WARNING: [Synth 8-7129] Port vga\.rgb[0] in module draw_bg is either unconnected or has no load
-WARNING: [Vivado 12-584] No ports matched 'ps2_clk'. [fpga/constraints/top_vga_basys3.xdc:274]
-CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [fpga/constraints/top_vga_basys3.xdc:274]
-WARNING: [Vivado 12-584] No ports matched 'ps2_clk'. [fpga/constraints/top_vga_basys3.xdc:275]
-CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [fpga/constraints/top_vga_basys3.xdc:275]
-WARNING: [Vivado 12-584] No ports matched 'ps2_clk'. [fpga/constraints/top_vga_basys3.xdc:276]
-CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [fpga/constraints/top_vga_basys3.xdc:276]
-WARNING: [Vivado 12-584] No ports matched 'ps2_data'. [fpga/constraints/top_vga_basys3.xdc:277]
-CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [fpga/constraints/top_vga_basys3.xdc:277]
-WARNING: [Vivado 12-584] No ports matched 'ps2_data'. [fpga/constraints/top_vga_basys3.xdc:278]
-CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [fpga/constraints/top_vga_basys3.xdc:278]
-WARNING: [Vivado 12-584] No ports matched 'ps2_data'. [fpga/constraints/top_vga_basys3.xdc:279]
-CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [fpga/constraints/top_vga_basys3.xdc:279]
 WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
-INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
 
 ----IMPLEMENTATION----
-WARNING: [Vivado 12-584] No ports matched 'ps2_clk'. [fpga/constraints/top_vga_basys3.xdc:274]
-CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [fpga/constraints/top_vga_basys3.xdc:274]
-WARNING: [Vivado 12-584] No ports matched 'ps2_clk'. [fpga/constraints/top_vga_basys3.xdc:275]
-CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [fpga/constraints/top_vga_basys3.xdc:275]
-WARNING: [Vivado 12-584] No ports matched 'ps2_clk'. [fpga/constraints/top_vga_basys3.xdc:276]
-CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [fpga/constraints/top_vga_basys3.xdc:276]
-WARNING: [Vivado 12-584] No ports matched 'ps2_data'. [fpga/constraints/top_vga_basys3.xdc:277]
-CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [fpga/constraints/top_vga_basys3.xdc:277]
-WARNING: [Vivado 12-584] No ports matched 'ps2_data'. [fpga/constraints/top_vga_basys3.xdc:278]
-CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [fpga/constraints/top_vga_basys3.xdc:278]
-WARNING: [Vivado 12-584] No ports matched 'ps2_data'. [fpga/constraints/top_vga_basys3.xdc:279]
-CRITICAL WARNING: [Common 17-55] 'set_property' expects at least one object. [fpga/constraints/top_vga_basys3.xdc:279]
+CLEAR :)

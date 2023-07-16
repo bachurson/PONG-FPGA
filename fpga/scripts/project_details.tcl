@@ -38,6 +38,9 @@ set sv_files {
     ../rtl/draw_bg.sv
     ../rtl/top_vga.sv
     ../rtl/vga_if.sv
+    ../rtl/draw_rect.sv
+    ../rtl/buttons/btn_synchro.sv
+    ../rtl/buttons/debounce.sv
     rtl/top_vga_basys3.sv
 }
 
