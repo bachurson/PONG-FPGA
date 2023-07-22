@@ -15,5 +15,9 @@ localparam HOR_BLANK_START = 1024;
 localparam VER_BLANK_START = 768;
 localparam HOR_BLANK_TIME = 320;
 localparam VER_BLANK_TIME = 38;
+localparam X_CENTER = 512;
+localparam Y_CENTER = 384;
+
+
 
 endpackage

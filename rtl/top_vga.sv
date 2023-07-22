@@ -17,7 +17,9 @@ module top_vga (
 //Local variables and signals:
 logic btn_up;
 logic btn_down;
-
+logic [10:0] rect_y_pos;
+logic [10:0] ball_xpos;
+logic [10:0] ball_ypos;
 
 // VGA signals from timing
 vga_if vga_tim();
@@ -28,11 +30,14 @@ vga_if vga_bg();
 // VGA signals from draw_rect
 vga_if vga_rct();
 
+// VGA signals from draw_ball
+vga_if vga_ball();
+
 //Signals assignments:
 
-assign vs = vga_rct.vsync;
-assign hs = vga_rct.hsync;
-assign {r,g,b} = vga_rct.rgb;
+assign vs = vga_ball.vsync;
+assign hs = vga_ball.hsync;
+assign {r,g,b} = vga_ball.rgb;
 
 
 //Submodules instances:
@@ -84,9 +89,30 @@ draw_rect u_draw_rect (
     .rst,
     .btn_up,
     .btn_down,
+    .y_position(rect_y_pos),
 
     .vga(vga_bg),
     .vga_out(vga_rct)
+);
+
+ball_ctl u_ball_ctl (
+    .clk,
+    .rst,
+    .rect_y_pos,
+
+    .xpos(ball_xpos),
+    .ypos(ball_ypos)
+
+);
+
+draw_ball u_draw_ball (
+    .clk,
+    .rst,
+    .x_position(ball_xpos),
+    .y_position(ball_ypos),
+    
+    .vga(vga_rct),
+    .vga_out(vga_ball)
 );
 
 endmodule
