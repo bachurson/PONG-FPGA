@@ -18,7 +18,6 @@
 // Additional Comments: Testbench dla liczb losowych 
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
 module random_tb;
 
     // Parameters
@@ -31,7 +30,6 @@ module random_tb;
     // Outputs
     logic [1:N] Q;
 
-  
     random #(.N(N)) dut (
         .clk(clk),
         .rst(rst),
@@ -45,11 +43,12 @@ module random_tb;
 
     initial begin
         rst = 0;
-      //  Q = 'd1;
-        #2 rst = 1;
-        #50 $finish;        
+        #2 rst = 1; 
+        #10 rst = 0; 
+        #100 $finish;        
     end
-always_ff@(posedge clk)
+
+    always_ff @(posedge clk)
         $display("Q = %d", Q);
 
 endmodule
