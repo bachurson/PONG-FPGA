@@ -5,9 +5,9 @@
 
 module random
     #(parameter N = 3) (
-        input clk,
-        input rst,
-        output [1:N] Q
+        input logic clk,
+        input logic rst,
+        output logic [1:N] Q
     );
 
 logic [1:N] Q_next;
@@ -17,7 +17,7 @@ logic taps;
 //********************************************************************//
 always @(posedge clk) begin
     if(rst)
-        Q <= 'd1
+        Q <= 'd1;
     else
         Q <= Q_next;
 end
@@ -25,7 +25,7 @@ end
 //combinational 
 //********************************************************************//
 always_comb begin
-    Q_next = {taps, Q[1:N - 1]}
+    Q_next = {taps, Q[1:N - 1]};
     case (N)
         3: taps = Q[3] ^ Q[2];
         4: taps = Q[3] ^ Q[4];
