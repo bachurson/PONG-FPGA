@@ -45,9 +45,11 @@ module random_tb;
 
     initial begin
         rst = 0;
-        Q = 'd2;
+      //  Q = 'd1;
         #2 rst = 1;
-        #50 $finish;
+        #50 $finish;        
     end
+always_ff@(posedge clk)
+        $display("Q = %d", Q);
 
 endmodule
