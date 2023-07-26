@@ -29,6 +29,7 @@ vivado*
 xvlog*
 xelab*
 xsim*
+.Xil
 
 dvt_build.log
 .dvt/
