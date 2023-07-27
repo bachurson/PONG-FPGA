@@ -25,12 +25,12 @@ end
 //combinational 
 //********************************************************************//
 always_comb begin
-    Q_next = {taps, Q[1:N - 1]};
     case (N)
         3: taps = Q[3] ^ Q[2];
         4: taps = Q[3] ^ Q[4];
         5: taps = Q[5] ^ Q[3];
     endcase
+    Q_next = {taps, Q[1:N - 1]};
 end
 
 //N=3
