@@ -32,7 +32,7 @@ always_comb begin
             btn_cnt_nxt = '0;
         end else begin
             btn_cnt_nxt = btn_cnt + 1;
-            btn_nxt = btn_out;
+            btn_nxt = '0; //btn_out; if we want on click
         end
     end else begin
         btn_nxt = '0;

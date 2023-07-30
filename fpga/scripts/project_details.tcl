@@ -41,6 +41,9 @@ set sv_files {
     ../rtl/draw_rect.sv
     ../rtl/buttons/btn_synchro.sv
     ../rtl/buttons/debounce.sv
+    ../rtl/ball/draw_ball.sv
+    ../rtl/ball/ball_ctl.sv
+    ../rtl/ball/random.sv
     rtl/top_vga_basys3.sv
 }
 

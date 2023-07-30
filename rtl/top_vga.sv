@@ -17,7 +17,12 @@ module top_vga (
 //Local variables and signals:
 logic btn_up;
 logic btn_down;
-
+logic [10:0] rect_y_pos;
+logic [10:0] ball_xpos;
+logic [10:0] ball_ypos;
+logic [1:3] random_3;
+logic [1:4] random_4;
+logic [1:5] random_5;
 
 // VGA signals from timing
 vga_if vga_tim();
@@ -28,11 +33,14 @@ vga_if vga_bg();
 // VGA signals from draw_rect
 vga_if vga_rct();
 
+// VGA signals from draw_ball
+vga_if vga_ball();
+
 //Signals assignments:
 
-assign vs = vga_rct.vsync;
-assign hs = vga_rct.hsync;
-assign {r,g,b} = vga_rct.rgb;
+assign vs = vga_ball.vsync;
+assign hs = vga_ball.hsync;
+assign {r,g,b} = vga_ball.rgb;
 
 
 //Submodules instances:
@@ -57,7 +65,7 @@ debouncer u_button_up (
     .rst(rst),
     .btn(btnu),
 
-    .btn_out(btnu_debounced)
+    .btn_out(btn_up)
 );
 
 debouncer u_button_down (
@@ -65,10 +73,11 @@ debouncer u_button_down (
     .rst(rst),
     .btn(btnd),
 
-    .btn_out(btnd_debounced)
+    .btn_out(btn_down)
 );
 
-btn_synchro u_button_synchro (
+//if we want paddle move on click
+/*btn_synchro u_button_synchro (
     .clk,
     .rst,
     .btnu(btnu_debounced),
@@ -77,16 +86,47 @@ btn_synchro u_button_synchro (
     .btn_up,
     .btn_down
 
-);
+);*/
 
 draw_rect u_draw_rect (
     .clk,
     .rst,
     .btn_up,
     .btn_down,
+    .y_position(rect_y_pos),
 
     .vga(vga_bg),
     .vga_out(vga_rct)
+);
+
+
+random #(.N(4)) u_random_4 (
+    .clk,
+    .rst(btn_down),
+    
+    .Q(random_4)
+);
+
+
+ball_ctl u_ball_ctl (
+    .clk,
+    .rst,
+    .rect_y_pos,
+    .random_4,
+    
+    .xpos(ball_xpos),
+    .ypos(ball_ypos)
+
+);
+
+draw_ball u_draw_ball (
+    .clk,
+    .rst,
+    .x_position(ball_xpos),
+    .y_position(ball_ypos),
+    
+    .vga(vga_rct),
+    .vga_out(vga_ball)
 );
 
 endmodule
