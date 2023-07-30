@@ -24,9 +24,7 @@ module ball_ctl_tb;
 logic clk;
 logic rst;
 logic [10:0] rect_y_pos;
-logic [2:0] random_3;
 logic [3:0] random_4;
-logic [4:0] random_5;
 
 // Outputs
 logic [10:0] xpos;
@@ -42,6 +40,13 @@ ball_ctl dut (
     .ypos(ypos)
 );
 
+// Random number for ypos
+random #(.N(4)) random_gen (
+    .clk(clk),
+    .rst(rst),
+    .Q(random_4)
+);
+
 logic [31:0] counter;
 // Clock generation
 always #5 clk = ~clk;
@@ -52,15 +57,15 @@ initial begin
     clk = 0;
     rst = 1;
     //rect_y_pos = 334; //HIGH_PRECISION 
-    //rect_y_pos = 384; // MEDIUM_PRECISION
-    rect_y_pos = 0; // Miss
+    rect_y_pos = 384; // LOW_PRECISION
+    //rect_y_pos = 0; // Miss
     //xpos  zmieniony w module z CENTER na 50 dla szybszego testu
     
     // Reset
     #10 rst = 0;
 
 
-    $finish;
+    #1000 $finish;
 end
 
 // Display changes
@@ -71,7 +76,7 @@ always_ff@(posedge clk) begin
         $display("xpos = %d, ypos = %d, state = %b, time = %0t", xpos, ypos, dut.state,  $realtime);
     end
     xpos_prev <= xpos;
-    if ( xpos > 512 ) begin // || dut.state != 0
+    if ( xpos > 520 || xpos == 0 ) begin // || dut.state != 0
         $display("Simulation ended at time = %t", $realtime);
         $finish;
     end
