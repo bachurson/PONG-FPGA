@@ -65,7 +65,7 @@ debouncer u_button_up (
     .rst(rst),
     .btn(btnu),
 
-    .btn_out(btnu_debounced)
+    .btn_out(btn_up)
 );
 
 debouncer u_button_down (
@@ -73,10 +73,11 @@ debouncer u_button_down (
     .rst(rst),
     .btn(btnd),
 
-    .btn_out(btnd_debounced)
+    .btn_out(btn_down)
 );
 
-btn_synchro u_button_synchro (
+//if we want paddle move on click
+/*btn_synchro u_button_synchro (
     .clk,
     .rst,
     .btnu(btnu_debounced),
@@ -85,7 +86,7 @@ btn_synchro u_button_synchro (
     .btn_up,
     .btn_down
 
-);
+);*/
 
 draw_rect u_draw_rect (
     .clk,
@@ -98,34 +99,20 @@ draw_rect u_draw_rect (
     .vga_out(vga_rct)
 );
 
-random #(.N(3)) u_random_3 (
-    .clk,
-    .rst,
-
-    .Q(random_3)
-);
 
 random #(.N(4)) u_random_4 (
     .clk,
-    .rst,
+    .rst(btn_down),
     
     .Q(random_4)
 );
 
-random #(.N(5)) u_random_5 (
-    .clk,
-    .rst,
-    
-    .Q(random_5)
-);
 
 ball_ctl u_ball_ctl (
     .clk,
     .rst,
     .rect_y_pos,
-    .random_3,
     .random_4,
-    .random_5,
     
     .xpos(ball_xpos),
     .ypos(ball_ypos)

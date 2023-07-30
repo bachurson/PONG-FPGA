@@ -1,6 +1,6 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2023-07-26 23:45:02
+Created: 2023-07-30 14:56:16
 
 ----SYNTHESIS----
 WARNING: [Synth 8-7129] Port vga\.rgb[11] in module draw_bg is either unconnected or has no load

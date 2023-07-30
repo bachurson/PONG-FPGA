@@ -60,10 +60,10 @@ module draw_rect (
       rgb_nxt = vga.rgb;
     
     if (btn_up == 1  && (y_position > 0)) 
-      y_position_nxt = y_position - 40;
+      y_position_nxt = y_position - 10;
        
     else if (btn_down == 1 && (y_position + HEIGHT <= VER_PIXELS )) 
-      y_position_nxt = y_position + 40;
+      y_position_nxt = y_position + 10;
 
     else
       y_position_nxt = y_position;
