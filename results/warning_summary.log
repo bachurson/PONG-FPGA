@@ -1,8 +1,12 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2023-07-30 14:56:16
+Created: 2023-07-31 03:12:33
 
 ----SYNTHESIS----
+WARNING: [Synth 8-7071] port 'ball_move' of module 'ball_ctl' is unconnected for instance 'u_ball_ctl' [rtl/top_vga.sv:127]
+WARNING: [Synth 8-7023] instance 'u_ball_ctl' of module 'ball_ctl' has 8 connections declared, but only 7 given [rtl/top_vga.sv:127]
+WARNING: [Synth 8-3848] Net ball_move in module/entity ball_ctl does not have driver. [rtl/ball/ball_ctl.sv:12]
+WARNING: [Synth 8-7129] Port ball_move in module ball_ctl is either unconnected or has no load
 WARNING: [Synth 8-7129] Port vga\.rgb[11] in module draw_bg is either unconnected or has no load
 WARNING: [Synth 8-7129] Port vga\.rgb[10] in module draw_bg is either unconnected or has no load
 WARNING: [Synth 8-7129] Port vga\.rgb[9] in module draw_bg is either unconnected or has no load
@@ -16,18 +20,7 @@ WARNING: [Synth 8-7129] Port vga\.rgb[2] in module draw_bg is either unconnected
 WARNING: [Synth 8-7129] Port vga\.rgb[1] in module draw_bg is either unconnected or has no load
 WARNING: [Synth 8-7129] Port vga\.rgb[0] in module draw_bg is either unconnected or has no load
 WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
-WARNING: [Synth 8-7129] Port vga\.rgb[11] in module draw_bg is either unconnected or has no load
-WARNING: [Synth 8-7129] Port vga\.rgb[10] in module draw_bg is either unconnected or has no load
-WARNING: [Synth 8-7129] Port vga\.rgb[9] in module draw_bg is either unconnected or has no load
-WARNING: [Synth 8-7129] Port vga\.rgb[8] in module draw_bg is either unconnected or has no load
-WARNING: [Synth 8-7129] Port vga\.rgb[7] in module draw_bg is either unconnected or has no load
-WARNING: [Synth 8-7129] Port vga\.rgb[6] in module draw_bg is either unconnected or has no load
-WARNING: [Synth 8-7129] Port vga\.rgb[5] in module draw_bg is either unconnected or has no load
-WARNING: [Synth 8-7129] Port vga\.rgb[4] in module draw_bg is either unconnected or has no load
-WARNING: [Synth 8-7129] Port vga\.rgb[3] in module draw_bg is either unconnected or has no load
-WARNING: [Synth 8-7129] Port vga\.rgb[2] in module draw_bg is either unconnected or has no load
-WARNING: [Synth 8-7129] Port vga\.rgb[1] in module draw_bg is either unconnected or has no load
-WARNING: [Synth 8-7129] Port vga\.rgb[0] in module draw_bg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ball_move in module ball_ctl is either unconnected or has no load
 
 ----IMPLEMENTATION----
 CLEAR :)

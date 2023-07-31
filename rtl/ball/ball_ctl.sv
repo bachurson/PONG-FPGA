@@ -6,8 +6,10 @@ module ball_ctl (
     input logic clk,
     input logic rst,
     input logic [10:0] rect_y_pos,
+    input logic [10:0] rect2_y_pos,
     input logic [3:0] random_4,
 
+    output logic ball_move,
     output logic [10:0] xpos,
     output logic [10:0] ypos
 );
@@ -26,6 +28,9 @@ module ball_ctl (
  logic LOW_PRECISION;
  logic MEDIUM_PRECISION;
  logic HIGH_PRECISION;
+ logic [10:0] ypos_prev;
+ logic ball_move_nxt;
+
  import vga_pkg::*;
 
 
@@ -37,6 +42,7 @@ module ball_ctl (
     localparam SCORE = 3'b100;
     localparam [26:0] COUNTER_MAX = 40_000_000;
     localparam RECT_X_POSITION = 30;
+    localparam RECT_X_POSITION_2 = HOR_PIXELS - 30;
     localparam RECT_HEIGHT = 100;
     localparam RECT_WIDTH = 15;
     localparam BALL_SIZE = 10;
@@ -51,10 +57,11 @@ module ball_ctl (
         velocity <= '0;
         counter <= '0;
         xpos <= X_CENTER;
-        clock_divider <= 0;
-        angle_counter_x <= 0;
-        angle_counter_y <= 0;
-        random <= 0;
+        clock_divider <= '0;
+        angle_counter_x <= '0;
+        angle_counter_y <= '0;
+        random <= '0;
+        //ball_move <= '0;
       end
       else begin
         xpos <= xpos_nxt;
@@ -68,6 +75,7 @@ module ball_ctl (
         angle_counter_x <= angle_x_nxt; 
         angle_counter_y <= angle_y_nxt; 
         random <= random_nxt;
+        //ball_move <= ball_move_nxt;
       end 
     end
 
@@ -75,13 +83,20 @@ module ball_ctl (
   //combinational 
   //********************************************************************//
   always_comb begin
-    IN_RECT = (xpos == RECT_X_POSITION + RECT_WIDTH  && ypos >= rect_y_pos - BALL_SIZE && ypos <= rect_y_pos + RECT_HEIGHT);
-    //LOW_PRECISION = (xpos == RECT_X_POSITION + RECT_WIDTH && ((ypos >= rect_y_pos && ypos <= rect_y_pos + 15) || (ypos >= rect_y_pos + 85 && ypos <= rect_y_pos + RECT_HEIGHT )));
-    MEDIUM_PRECISION = (xpos == RECT_X_POSITION + RECT_WIDTH && ((ypos >= rect_y_pos + 15  && ypos <= rect_y_pos + RECT_HEIGHT - 65) || (ypos >= rect_y_pos + 65 && ypos <= rect_y_pos + RECT_HEIGHT - 15)));
-    HIGH_PRECISION = (xpos == RECT_X_POSITION + RECT_WIDTH && ypos >= rect_y_pos + 35 && ypos <= rect_y_pos + RECT_HEIGHT - 35);
+    IN_RECT = ((xpos <= RECT_X_POSITION + RECT_WIDTH && xpos > RECT_X_POSITION) && ypos >= rect_y_pos - BALL_SIZE && ypos <= rect_y_pos + RECT_HEIGHT) || ((xpos >= RECT_X_POSITION_2 - RECT_WIDTH && xpos < RECT_X_POSITION_2)  && ypos >= rect2_y_pos - BALL_SIZE && ypos <= rect2_y_pos + RECT_HEIGHT);
+    MEDIUM_PRECISION = (xpos == RECT_X_POSITION + RECT_WIDTH && ((ypos >= rect_y_pos + 15  && ypos <= rect_y_pos + RECT_HEIGHT - 65) || (ypos >= rect_y_pos + 65 && ypos <= rect_y_pos + RECT_HEIGHT - 15))) || (xpos == RECT_X_POSITION_2 - RECT_WIDTH && ((ypos >= rect2_y_pos + 15  && ypos <= rect2_y_pos + RECT_HEIGHT - 65) || (ypos >= rect2_y_pos + 65 && ypos <= rect2_y_pos + RECT_HEIGHT - 15)));
+    HIGH_PRECISION = (xpos == RECT_X_POSITION + RECT_WIDTH && ypos >= rect_y_pos + 35 && ypos <= rect_y_pos + RECT_HEIGHT - 35) || (xpos == RECT_X_POSITION_2 - RECT_WIDTH && ypos >= rect2_y_pos + 35 && ypos <= rect2_y_pos + RECT_HEIGHT - 35);
   end
 
-  always_comb begin 
+  /*always_comb begin: ball_moving
+    if (ypos != ypos_prev)
+      ball_move_nxt = 'b1;
+    else
+      ball_move_nxt = 'b0;
+    ypos_prev = ypos;
+  end*/
+
+  always_comb begin : clock_divide
     if (counter >= COUNTER_MAX) 
       counter_nxt = 0; 
     else 
@@ -220,34 +235,47 @@ module ball_ctl (
         WALL: begin
           if (xpos > 0 && xpos < HOR_PIXELS) begin
 
-            if (counter >= COUNTER_MAX) begin           
-              dirx_nxt = dirx;
-              random_nxt = random;
-              state_nxt = WALL;   
+            if (counter >= COUNTER_MAX) begin   
               
-              if(angle_counter_x == 10) begin
-                xpos_nxt = xpos + dirx;
+              if (IN_RECT) begin
+                random_nxt = random_4;
                 angle_x_nxt = 0;
-              end else begin
+                angle_y_nxt = 0;
+                dirx_nxt = dirx;
+                diry_nxt = diry;
                 xpos_nxt = xpos;
-                angle_x_nxt = angle_counter_x + 1; 
-              end
-
-              if(angle_counter_y == random) begin      
-
-                if (ypos == 0 || ypos == VER_PIXELS) begin
-                  diry_nxt = -diry;
-                  ypos_nxt = ypos - diry;
+                ypos_nxt = ypos;
+                state_nxt = PADDLE;      
+              end else begin  
+                dirx_nxt = dirx;
+                random_nxt = random;
+                state_nxt = WALL;   
+                
+                if(angle_counter_x == 10) begin
+                  xpos_nxt = xpos + dirx;
+                  angle_x_nxt = 0;
                 end else begin
-                  diry_nxt = diry;
-                  ypos_nxt = ypos + diry;
+                  xpos_nxt = xpos;
+                  angle_x_nxt = angle_counter_x + 1; 
                 end
 
-                angle_y_nxt = 0;
-              end else begin
-                ypos_nxt = ypos;  
-                diry_nxt = diry;
-                angle_y_nxt = angle_counter_y + 1;  
+                if(angle_counter_y == random) begin      
+
+                  if (ypos == 0 || ypos == VER_PIXELS) begin
+                    diry_nxt = -diry;
+                    ypos_nxt = ypos - diry;
+                  end else begin
+                    diry_nxt = diry;
+                    ypos_nxt = ypos + diry;
+                  end
+
+                  angle_y_nxt = 0;
+                end else begin
+                  ypos_nxt = ypos;  
+                  diry_nxt = diry;
+                  angle_y_nxt = angle_counter_y + 1;  
+                end
+
               end
 
             end else begin
