@@ -18,6 +18,7 @@ module top_vga (
 logic btn_up;
 logic btn_down;
 logic [10:0] rect_y_pos;
+logic [10:0] rect2_y_pos;
 logic [10:0] ball_xpos;
 logic [10:0] ball_ypos;
 logic [1:3] random_3;
@@ -32,6 +33,9 @@ vga_if vga_bg();
 
 // VGA signals from draw_rect
 vga_if vga_rct();
+
+// VGA signals from draw_rect_2
+vga_if vga_rct2();
 
 // VGA signals from draw_ball
 vga_if vga_ball();
@@ -93,10 +97,20 @@ draw_rect u_draw_rect (
     .rst,
     .btn_up,
     .btn_down,
-    .y_position(rect_y_pos),
 
+    .y_position(rect_y_pos),
     .vga(vga_bg),
     .vga_out(vga_rct)
+);
+
+draw_rect_2 u_draw_rect_2 (
+    .clk,
+    .rst,
+    .ball_y_pos(ball_ypos),
+
+    .y_position(rect2_y_pos),
+    .vga(vga_rct),
+    .vga_out(vga_rct2)
 );
 
 
@@ -112,6 +126,7 @@ ball_ctl u_ball_ctl (
     .clk,
     .rst,
     .rect_y_pos,
+    .rect2_y_pos(rect2_y_pos),
     .random_4,
     
     .xpos(ball_xpos),
@@ -125,7 +140,7 @@ draw_ball u_draw_ball (
     .x_position(ball_xpos),
     .y_position(ball_ypos),
     
-    .vga(vga_rct),
+    .vga(vga_rct2),
     .vga_out(vga_ball)
 );
 

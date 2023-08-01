@@ -2,11 +2,11 @@
 
 `timescale 1 ns / 1 ps
 
-module draw_rect (
+module draw_rect_2 (
     input  logic clk,
     input  logic rst,
-    input  logic btn_up,
-    input  logic btn_down,
+    input  logic [10:0] ball_y_pos,
+
     output logic [10:0] y_position,
     vga_if.in vga,
     vga_if.out vga_out
@@ -14,6 +14,7 @@ module draw_rect (
 
  logic [11:0] rgb_nxt;
  logic [10:0] y_position_nxt;
+ logic [26:0] divider, divider_nxt;
  
  import vga_pkg::*;
 
@@ -21,9 +22,9 @@ module draw_rect (
 //local parameters
 //********************************************************************//
    localparam HEIGHT = 100;
-   localparam WIDTH = 15;
+   localparam WIDTH = 20;
    localparam COLOR_WHITE = 12'hf_f_f; 
-   localparam X_POSITION = 30;
+   localparam X_POSITION = HOR_PIXELS - 30;
 
 //procedural
 //********************************************************************//
@@ -37,6 +38,7 @@ module draw_rect (
         vga_out.vblnk <= '0;
         vga_out.rgb <= '0;
         y_position <= '0;
+        divider <= '0;
       end
       else begin
         vga_out.hcount <= vga.hcount;
@@ -47,6 +49,7 @@ module draw_rect (
         vga_out.vblnk <= vga.vblnk;
         vga_out.rgb <= rgb_nxt;
         y_position <= y_position_nxt;
+        divider <= divider_nxt;
       end 
     end
 
@@ -54,22 +57,31 @@ module draw_rect (
   //combinational 
   //********************************************************************//
   always_comb begin : rect_comb_blk
-    if (vga_out.hcount >= X_POSITION && vga_out.hcount <= (X_POSITION + WIDTH ) && vga_out.vcount >= y_position  && vga_out.vcount <= (y_position+HEIGHT )) rgb_nxt = COLOR_WHITE;
-
+    if (vga_out.hcount <= X_POSITION && vga_out.hcount >=(X_POSITION - WIDTH ) && vga_out.vcount >= y_position  && vga_out.vcount <= (y_position + HEIGHT )) 
+      rgb_nxt = COLOR_WHITE;
     else 
       rgb_nxt = vga.rgb;
-    
-    if (btn_up == 1  && (y_position > 0)) 
-      y_position_nxt = y_position - 10;
-       
-    else if (btn_down == 1 && (y_position + HEIGHT <= VER_PIXELS )) 
-      y_position_nxt = y_position + 10;
 
-    else
-      y_position_nxt = y_position;
+    if(divider >= 500000)
+      divider_nxt = 0;
+    else 
+      if((ball_y_pos > y_position - 400) || (ball_y_pos < y_position + 400))
+        divider_nxt = divider + 3;
+      else
+        divider_nxt = divider + 2;
 
-    
+    if(divider == 0) begin
+        if((ball_y_pos > y_position + HEIGHT - 40) && (y_position + HEIGHT <= VER_PIXELS))
+          y_position_nxt = y_position + 1;
+        else if ((ball_y_pos < y_position + 40) && (y_position > 0) )
+          y_position_nxt = y_position - 1;
+        else 
+          y_position_nxt = y_position;
+    end else begin
+        y_position_nxt = y_position;
+    end
   end
-
+        
+ 
 //********************************************************************//
 endmodule
