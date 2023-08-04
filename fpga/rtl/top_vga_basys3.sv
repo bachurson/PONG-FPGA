@@ -12,7 +12,9 @@ module top_vga_basys3 (
     output wire [3:0] vgaRed,
     output wire [3:0] vgaGreen,
     output wire [3:0] vgaBlue,
-    output wire JA1
+    output wire JA1,
+    output wire [3:0] an,
+    output wire [6:0] seg
 );
 
 
@@ -62,7 +64,9 @@ top_vga u_top_vga (
     .g(vgaGreen),
     .b(vgaBlue),
     .hs(Hsync),
-    .vs(Vsync)
+    .vs(Vsync),
+    .an(an),
+    .seg(seg)
 );
 
 endmodule

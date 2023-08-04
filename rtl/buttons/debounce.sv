@@ -3,7 +3,7 @@
 `timescale 1 ns / 1 ps
 
 
-module debouncer (
+module debounce (
     input logic clk,
     input logic rst,
     input logic btn,
