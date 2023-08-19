@@ -2,7 +2,7 @@
 
 `timescale 1 ns / 1 ps
 
-module top_vga (
+module top_pong (
     input  logic clk,
     input  logic rst,
     input  logic btnd,
@@ -11,7 +11,9 @@ module top_vga (
     output logic hs,
     output logic [3:0] r,
     output logic [3:0] g,
-    output logic [3:0] b 
+    output logic [3:0] b,
+    output logic [3:0] an,
+    output logic [6:0] seg  
 );
 
 //Local variables and signals:
@@ -24,6 +26,8 @@ logic [10:0] ball_ypos;
 logic [1:3] random_3;
 logic [1:4] random_4;
 logic [1:5] random_5;
+logic [6:0] points_first_player;
+logic [6:0] points_second_player;
 
 // VGA signals from timing
 vga_if vga_tim();
@@ -64,7 +68,7 @@ draw_bg u_draw_bg (
 );
 
 
-debouncer u_button_up (
+debounce u_button_up (
     .clk(clk),
     .rst(rst),
     .btn(btnu),
@@ -72,7 +76,7 @@ debouncer u_button_up (
     .btn_out(btn_up)
 );
 
-debouncer u_button_down (
+debounce u_button_down (
     .clk(clk),
     .rst(rst),
     .btn(btnd),
@@ -130,7 +134,9 @@ ball_ctl u_ball_ctl (
     .random_4,
     
     .xpos(ball_xpos),
-    .ypos(ball_ypos)
+    .ypos(ball_ypos),
+    .points_first_player(points_first_player),
+    .points_second_player(points_second_player)
 
 );
 
@@ -144,4 +150,12 @@ draw_ball u_draw_ball (
     .vga_out(vga_ball)
 );
 
+seg7_display seg7_display (
+    .clk(clk),
+    .rst(rst),
+    .seg(seg),
+    .an(an),
+    .points_first_player(points_first_player),
+    .points_second_player(points_second_player)
+);
 endmodule

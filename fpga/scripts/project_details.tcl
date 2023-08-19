@@ -13,10 +13,10 @@
 #                   Project details                   #
 #-----------------------------------------------------#
 # Project name                                  -- EDIT
-set project_name vga_project
+set project_name pong_project
 
 # Top module name                               -- EDIT
-set top_module top_vga_basys3
+set top_module top_pong_basys3
 
 # FPGA device
 set target xc7a35tcpg236-1
@@ -26,7 +26,7 @@ set target xc7a35tcpg236-1
 #-----------------------------------------------------#
 # Specify .xdc files location                   -- EDIT
 set xdc_files {
-    constraints/top_vga_basys3.xdc
+    constraints/top_pong_basys3.xdc
     constraints/clk_wiz_0.xdc
 
 }
@@ -36,8 +36,9 @@ set sv_files {
     ../rtl/vga_pkg.sv
     ../rtl/vga_timing.sv
     ../rtl/draw_bg.sv
-    ../rtl/top_vga.sv
+    ../rtl/top_pong.sv
     ../rtl/vga_if.sv
+    ../rtl/seg7_display.sv
     ../rtl/rect/draw_rect.sv
     ../rtl/rect/draw_rect_2.sv
     ../rtl/buttons/btn_synchro.sv
@@ -45,7 +46,7 @@ set sv_files {
     ../rtl/ball/draw_ball.sv
     ../rtl/ball/ball_ctl.sv
     ../rtl/ball/random.sv
-    rtl/top_vga_basys3.sv
+    rtl/top_pong_basys3.sv
 }
 
 # Specify Verilog design files location         -- EDIT

@@ -2,7 +2,7 @@
 
 `timescale 1 ns / 1 ps
 
-module top_vga_basys3 (
+module top_pong_basys3 (
     input wire clk,
     input wire btnC,
     input wire btnD,
@@ -12,7 +12,9 @@ module top_vga_basys3 (
     output wire [3:0] vgaRed,
     output wire [3:0] vgaGreen,
     output wire [3:0] vgaBlue,
-    output wire JA1
+    output wire JA1,
+    output wire [3:0] an,
+    output wire [6:0] seg
 );
 
 
@@ -51,7 +53,7 @@ ODDR pclk_oddr (
 //Project functional top module
  
 
-top_vga u_top_vga (
+top_pong u_top_pong (
     //inputs
     .clk(pclk),
     .rst(btnC),
@@ -62,7 +64,9 @@ top_vga u_top_vga (
     .g(vgaGreen),
     .b(vgaBlue),
     .hs(Hsync),
-    .vs(Vsync)
+    .vs(Vsync),
+    .an(an),
+    .seg(seg)
 );
 
 endmodule

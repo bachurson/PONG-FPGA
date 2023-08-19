@@ -22,7 +22,7 @@ module draw_rect_2 (
 //local parameters
 //********************************************************************//
    localparam HEIGHT = 100;
-   localparam WIDTH = 20;
+   localparam WIDTH = 15;
    localparam COLOR_WHITE = 12'hf_f_f; 
    localparam X_POSITION = HOR_PIXELS - 30;
 
@@ -62,7 +62,7 @@ module draw_rect_2 (
     else 
       rgb_nxt = vga.rgb;
 
-    if(divider >= 500000)
+    if(divider >= 550000)
       divider_nxt = 0;
     else 
       if((ball_y_pos > y_position - 400) || (ball_y_pos < y_position + 400))

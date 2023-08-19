@@ -10,7 +10,9 @@ module ball_ctl (
     input logic [3:0] random_4,
 
     output logic [10:0] xpos,
-    output logic [10:0] ypos
+    output logic [10:0] ypos,
+    output logic [6:0] points_first_player,
+    output logic [6:0] points_second_player
 );
  logic [26:0] counter, counter_nxt;
  logic [13:0] velocity, vel_nxt;
@@ -29,7 +31,8 @@ module ball_ctl (
  logic HIGH_PRECISION;
  logic EDGE;
  logic which_edge, which_edge_nxt;
-
+ logic [6:0] points_first_player_nxt;
+ logic [6:0] points_second_player_nxt;
 
 
  import vga_pkg::*;
@@ -41,11 +44,12 @@ module ball_ctl (
     localparam PADDLE = 3'b001;
     localparam WALL = 3'b010;
     localparam SCORE = 3'b100;
+    localparam END_GAME = 3'b111;
     localparam [26:0] COUNTER_MAX = 40_000_000;
     localparam RECT_X_POSITION = 30;
     localparam RECT_X_POSITION_2 = HOR_PIXELS - 30;
     localparam RECT_HEIGHT = 100;
-    localparam RECT_WIDTH = 20;
+    localparam RECT_WIDTH = 15;
     localparam BALL_SIZE = 10;
 
 //procedural
@@ -63,6 +67,8 @@ module ball_ctl (
         angle_counter_y <= '0;
         random <= '0;
         which_edge <= '0;
+        points_first_player <= 0;
+        points_second_player <= 0;
       end
       else begin
         xpos <= xpos_nxt;
@@ -77,6 +83,8 @@ module ball_ctl (
         angle_counter_y <= angle_y_nxt; 
         random <= random_nxt;
         which_edge <= which_edge_nxt;
+        points_first_player <= points_first_player_nxt;
+        points_second_player <= points_second_player_nxt;
       end 
     end
 
@@ -87,7 +95,7 @@ module ball_ctl (
     IN_RECT = ((xpos == RECT_X_POSITION + RECT_WIDTH) && ((ypos >= rect_y_pos - BALL_SIZE) || (ypos >= rect_y_pos)) && ypos <= rect_y_pos + RECT_HEIGHT) || ((xpos == RECT_X_POSITION_2 - RECT_WIDTH - BALL_SIZE) && ((ypos >= rect2_y_pos - BALL_SIZE) || (ypos >= rect2_y_pos)) && ypos <= rect2_y_pos + RECT_HEIGHT);
     MEDIUM_PRECISION = (xpos == RECT_X_POSITION + RECT_WIDTH && ((ypos >= rect_y_pos + 15  && ypos <= rect_y_pos + RECT_HEIGHT - 65) || (ypos >= rect_y_pos + 65 && ypos <= rect_y_pos + RECT_HEIGHT - 15))) || (xpos == RECT_X_POSITION_2 - RECT_WIDTH && ((ypos >= rect2_y_pos + 15  && ypos <= rect2_y_pos + RECT_HEIGHT - 65) || (ypos >= rect2_y_pos + 65 && ypos <= rect2_y_pos + RECT_HEIGHT - 15)));
     HIGH_PRECISION = (xpos == RECT_X_POSITION + RECT_WIDTH && ypos >= rect_y_pos + 35 && ypos <= rect_y_pos + RECT_HEIGHT - 35) || (xpos == RECT_X_POSITION_2 - RECT_WIDTH && ypos >= rect2_y_pos + 35 && ypos <= rect2_y_pos + RECT_HEIGHT - 35);
-    EDGE = ((xpos <= RECT_X_POSITION + RECT_WIDTH && xpos > RECT_X_POSITION - BALL_SIZE) && (ypos >= rect_y_pos - BALL_SIZE && ypos < rect_y_pos + RECT_HEIGHT)) || ((xpos <= RECT_X_POSITION_2 - RECT_WIDTH - BALL_SIZE && xpos > RECT_X_POSITION_2 + BALL_SIZE) && (ypos >= rect2_y_pos - BALL_SIZE && ypos < rect2_y_pos + RECT_HEIGHT));
+    EDGE = ((xpos <= RECT_X_POSITION + RECT_WIDTH && xpos > RECT_X_POSITION - BALL_SIZE) && (ypos >= rect_y_pos - BALL_SIZE && ypos < rect_y_pos + RECT_HEIGHT)) || ((xpos <= RECT_X_POSITION_2 && xpos > RECT_X_POSITION_2 - RECT_WIDTH - BALL_SIZE) && (ypos >= rect2_y_pos - BALL_SIZE && ypos < rect2_y_pos + RECT_HEIGHT));
   end
 
 
@@ -95,29 +103,37 @@ module ball_ctl (
     if (counter >= COUNTER_MAX) 
       counter_nxt = 0; 
     else 
-      if(state==START)
+      if(state == START)
         counter_nxt = counter + 1 + velocity/10;
       else 
         counter_nxt = counter + 1 + velocity; 
 
-    if(clock_divider == 1000000) begin //velocity setup
-      divider_nxt = 0;
-      if (velocity <= 600)
-        vel_nxt = velocity + 60;
-      else if (velocity >= 600 && velocity <= 2000)
-        vel_nxt = velocity + 2;
-      else if (velocity >= 2000 && velocity <= 8000)
-        vel_nxt = velocity + 1;
-      else 
+    if(state != SCORE) begin
+
+      if(clock_divider == 1000000) begin //velocity setup
+        divider_nxt = 0;
+        if (velocity <= 600)
+          vel_nxt = velocity + 60;
+        else if (velocity >= 600 && velocity <= 2000)
+          vel_nxt = velocity + 2;
+        else if (velocity >= 2000 && velocity <= 8000)
+          vel_nxt = velocity + 1;
+        else 
+          vel_nxt = velocity;  
+      end else begin
         vel_nxt = velocity;
+        divider_nxt = clock_divider + 1;
+      end
+
     end else begin
-      vel_nxt = velocity;
-      divider_nxt = clock_divider + 1;
+      vel_nxt = 0;
+      divider_nxt = 0;
     end
 
-    if(( (dirx == -1) && (ypos >= rect_y_pos + RECT_HEIGHT) ) || ( (dirx == 1) && (ypos >= rect2_y_pos + RECT_HEIGHT) ))
+
+    if(( (xpos <= X_CENTER) && (ypos >= rect_y_pos + RECT_HEIGHT) ) || ( (xpos > X_CENTER) && (ypos >= rect2_y_pos + RECT_HEIGHT) ))
       which_edge_nxt = 0;
-    else if(( (dirx == -1) && (ypos < rect_y_pos - BALL_SIZE) ) || ( (dirx == 1) && (ypos < rect2_y_pos - BALL_SIZE) ) )
+    else if(( (xpos <= X_CENTER) && (ypos < rect_y_pos - BALL_SIZE) ) || ( (xpos > X_CENTER) && (ypos < rect2_y_pos - BALL_SIZE) ) )
       which_edge_nxt = 1;
     else
       which_edge_nxt = which_edge;
@@ -125,40 +141,62 @@ module ball_ctl (
 
     case(state)
         START: begin
-          if (xpos > 0 && counter >= COUNTER_MAX) begin
-            if (IN_RECT || EDGE) begin
-              random_nxt = random_4;
-              angle_x_nxt = 0;
-              angle_y_nxt = 0;
-              dirx_nxt = dirx;
-              diry_nxt = diry;
-              xpos_nxt = xpos;
-              ypos_nxt = Y_CENTER;
-              state_nxt = PADDLE;
+          dirx_nxt = dirx;
+          diry_nxt = diry;
+          angle_x_nxt = 0;
+          angle_y_nxt = 0;
+          points_second_player_nxt = points_second_player;
+          points_first_player_nxt = points_first_player;
+
+          if(points_second_player != 9 && points_first_player != 9) begin
+
+            if (xpos > 0 && xpos < HOR_PIXELS) begin
+
+              if (counter >= COUNTER_MAX) begin
+
+                  if (IN_RECT || EDGE) begin
+                      random_nxt = random_4;
+                      xpos_nxt = xpos;
+                      ypos_nxt = Y_CENTER;
+                      state_nxt = PADDLE;
+                  end else begin
+                      random_nxt = 0;                
+                      xpos_nxt = xpos + dirx;
+                      ypos_nxt = Y_CENTER;
+                      state_nxt = START;
+                  end    
+
+              end else begin
+                random_nxt = random;               
+                state_nxt = START;
+                xpos_nxt = xpos;
+                ypos_nxt = ypos;
+              end
+
             end else begin
               random_nxt = 0;
-              angle_x_nxt = 0;
-              angle_y_nxt = 0;
+              xpos_nxt = xpos;
+              ypos_nxt = ypos;
               dirx_nxt = dirx;
               diry_nxt = diry;
-              xpos_nxt = xpos + dirx;
-              ypos_nxt = Y_CENTER;
-              state_nxt = START;
+              state_nxt = SCORE;          
             end
+
           end else begin
             random_nxt = 0;
-            angle_x_nxt = 0;
-            angle_y_nxt = 0;
-            dirx_nxt = dirx;
-            diry_nxt = diry;
-            xpos_nxt = xpos;
+            xpos_nxt = X_CENTER;
             ypos_nxt = Y_CENTER;
-            state_nxt = START;          
+            state_nxt = END_GAME;
           end
+
         end
  
         PADDLE: begin
+          points_second_player_nxt = points_second_player;
+          points_first_player_nxt = points_first_player;
+          
           if (xpos > 0 && xpos < HOR_PIXELS) begin
+
              if (counter >= COUNTER_MAX) begin
 
               if(IN_RECT) begin
@@ -174,6 +212,7 @@ module ball_ctl (
                   random_nxt = random_4 + 10;
                 else 
                   random_nxt = random_4 + 2;
+
                 if(random[0] == 1'b0) 
                   diry_nxt = - diry;
                 else 
@@ -181,12 +220,14 @@ module ball_ctl (
 
                 ypos_nxt = ypos + diry;
               end else if (EDGE) begin
+
                 random_nxt = 2;
                 angle_x_nxt = angle_counter_x;
                 angle_y_nxt = angle_counter_y;
                 state_nxt = PADDLE;
                 dirx_nxt = - dirx;
                 xpos_nxt = xpos - dirx;
+
                 if(which_edge) begin
                   diry_nxt = -1;
                   ypos_nxt = ypos - 1;
@@ -194,6 +235,7 @@ module ball_ctl (
                   diry_nxt = 1;
                   ypos_nxt = ypos + 1;
                 end
+
               end else if(ypos == 0 || ypos == VER_PIXELS) begin
                 random_nxt = random;
                 angle_x_nxt = angle_counter_x;
@@ -237,6 +279,7 @@ module ball_ctl (
               xpos_nxt = xpos;
               ypos_nxt = ypos;
             end
+
           end else begin
             random_nxt = 0;
             angle_x_nxt = 0;
@@ -247,9 +290,13 @@ module ball_ctl (
             xpos_nxt = xpos;
             ypos_nxt = ypos;
           end
+
         end
 
         WALL: begin
+          points_second_player_nxt = points_second_player;
+          points_first_player_nxt = points_first_player;
+
           if (xpos > 0 && xpos < HOR_PIXELS) begin
 
             if (counter >= COUNTER_MAX) begin   
@@ -262,12 +309,12 @@ module ball_ctl (
                 diry_nxt = diry;
                 xpos_nxt = xpos;
                 ypos_nxt = ypos;
-                state_nxt = PADDLE;      
+                state_nxt = PADDLE;     
               end else begin  
                 dirx_nxt = dirx;
-                random_nxt = random;
+                random_nxt = random;              
                 state_nxt = WALL;   
-                
+
                 if(angle_counter_x == 10) begin
                   xpos_nxt = xpos + dirx;
                   angle_x_nxt = 0;
@@ -290,7 +337,7 @@ module ball_ctl (
                 end else begin
                   ypos_nxt = ypos;  
                   diry_nxt = diry;
-                  angle_y_nxt = angle_counter_y + 1;  
+                  angle_y_nxt = angle_counter_y + 1; 
                 end
 
               end
@@ -314,8 +361,9 @@ module ball_ctl (
             dirx_nxt = dirx;
             diry_nxt = diry;
             xpos_nxt = xpos;
-            ypos_nxt = ypos;   
+            ypos_nxt = ypos;
           end
+
         end
 
         SCORE: begin
@@ -324,20 +372,58 @@ module ball_ctl (
           angle_y_nxt = 0;
           dirx_nxt = dirx;
           diry_nxt = diry;
-          xpos_nxt = xpos;
-          ypos_nxt = ypos;
-          state_nxt = SCORE;    
+
+          if(counter >= COUNTER_MAX) begin      
+            ypos_nxt = Y_CENTER;    
+
+            if (xpos == 0) begin
+              points_second_player_nxt = points_second_player + 1;
+              points_first_player_nxt = points_first_player;  
+              xpos_nxt = X_CENTER;
+              state_nxt = START;
+            end
+            else begin
+              points_first_player_nxt = points_first_player + 1;
+              points_second_player_nxt = points_second_player;   
+              xpos_nxt = X_CENTER;
+              state_nxt = START;
+            end
+           
+          end else begin
+            points_first_player_nxt = points_first_player;
+            points_second_player_nxt = points_second_player;
+            xpos_nxt = xpos;
+            ypos_nxt = ypos;
+            state_nxt = SCORE;
+          end
+            
         end
+
+        END_GAME: begin
+          random_nxt = 0;
+          angle_x_nxt = 0;
+          angle_y_nxt = 0;
+          xpos_nxt = X_CENTER;
+          ypos_nxt = Y_CENTER;
+          state_nxt = END_GAME;
+          dirx_nxt = 0;  
+          diry_nxt = 0;
+          points_second_player_nxt = points_second_player;
+          points_first_player_nxt = points_first_player; 
+        end
+
 
         default: begin
           random_nxt = 0;
           angle_x_nxt = 0;
           angle_y_nxt = 0;
-          xpos_nxt = xpos;
-          ypos_nxt = ypos;
+          xpos_nxt = 0;
+          ypos_nxt = 0;
           state_nxt = START;
-          dirx_nxt = dirx;  
-          diry_nxt = diry; 
+          dirx_nxt = 0;  
+          diry_nxt = 0;
+          points_second_player_nxt = 0;
+          points_first_player_nxt = 0; 
         end
 
     endcase
