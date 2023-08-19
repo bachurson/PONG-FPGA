@@ -33,19 +33,10 @@ set xdc_files {
 
 # Specify SystemVerilog design files location   -- EDIT
 set sv_files {
-    ../rtl/vga_pkg.sv
-    ../rtl/vga_timing.sv
-    ../rtl/draw_bg.sv
     ../rtl/top_pong.sv
-    ../rtl/vga_if.sv
-    ../rtl/seg7_display.sv
-    ../rtl/rect/draw_rect.sv
-    ../rtl/rect/draw_rect_2.sv
     ../rtl/buttons/btn_synchro.sv
     ../rtl/buttons/debounce.sv
-    ../rtl/ball/draw_ball.sv
-    ../rtl/ball/ball_ctl.sv
-    ../rtl/ball/random.sv
+    ../rtl/TxD.sv
     rtl/top_pong_basys3.sv
 }
 

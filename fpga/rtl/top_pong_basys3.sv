@@ -7,14 +7,8 @@ module top_pong_basys3 (
     input wire btnC,
     input wire btnD,
     input wire btnU,
-    output wire Vsync,
-    output wire Hsync,
-    output wire [3:0] vgaRed,
-    output wire [3:0] vgaGreen,
-    output wire [3:0] vgaBlue,
     output wire JA1,
-    output wire [3:0] an,
-    output wire [6:0] seg
+    output wire TxD
 );
 
 
@@ -23,6 +17,8 @@ module top_pong_basys3 (
 wire pclk;
 wire locked;
 wire pclk_mirror;
+wire btn_right;
+
 
 
 //Signals assignments
@@ -60,13 +56,9 @@ top_pong u_top_pong (
     .btnu(btnU),
     .btnd(btnD),
     //outputs
-    .r(vgaRed),
-    .g(vgaGreen),
-    .b(vgaBlue),
-    .hs(Hsync),
-    .vs(Vsync),
-    .an(an),
-    .seg(seg)
+    .TxD(TxD)
 );
+
+
 
 endmodule
