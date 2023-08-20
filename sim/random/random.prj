@@ -1,0 +1,2 @@
+sv work ../../rtl/ball/random.sv \
+        random_tb.sv
