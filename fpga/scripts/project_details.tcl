@@ -46,6 +46,7 @@ set sv_files {
     ../rtl/ball/draw_ball.sv
     ../rtl/ball/ball_ctl.sv
     ../rtl/ball/random.sv
+    ../rtl/uart_rx.sv
     rtl/top_pong_basys3.sv
 }
 
