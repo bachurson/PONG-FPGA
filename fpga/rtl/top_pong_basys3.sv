@@ -7,6 +7,7 @@ module top_pong_basys3 (
     input wire btnC,
     input wire btnD,
     input wire btnU,
+    input wire RxD,
     output wire Vsync,
     output wire Hsync,
     output wire [3:0] vgaRed,
@@ -14,7 +15,8 @@ module top_pong_basys3 (
     output wire [3:0] vgaBlue,
     output wire JA1,
     output wire [3:0] an,
-    output wire [6:0] seg
+    output wire [6:0] seg,
+    output wire [7:0] RxData
 );
 
 
@@ -23,12 +25,12 @@ module top_pong_basys3 (
 wire pclk;
 wire locked;
 wire pclk_mirror;
-
+wire [7:0] rxData;
 
 //Signals assignments
 
 assign JA1 = pclk_mirror;
-
+assign RxData = rxData;
 
 //FPGA submodules placement
 
@@ -66,7 +68,9 @@ top_pong u_top_pong (
     .hs(Hsync),
     .vs(Vsync),
     .an(an),
-    .seg(seg)
+    .seg(seg),
+    .RxD(RxD),
+    .RxData(rxData)
 );
 
 endmodule

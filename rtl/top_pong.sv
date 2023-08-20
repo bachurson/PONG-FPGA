@@ -7,13 +7,15 @@ module top_pong (
     input  logic rst,
     input  logic btnd,
     input  logic btnu,
+    input logic RxD,
     output logic vs,
     output logic hs,
     output logic [3:0] r,
     output logic [3:0] g,
     output logic [3:0] b,
     output logic [3:0] an,
-    output logic [6:0] seg  
+    output logic [6:0] seg,  
+    output logic [7:0] RxData
 );
 
 //Local variables and signals:
@@ -157,5 +159,12 @@ seg7_display seg7_display (
     .an(an),
     .points_first_player(points_first_player),
     .points_second_player(points_second_player)
+);
+
+uart_rx u_uart_rx (
+    .clk(clk),
+    .rst(rst),
+    .RxD(RxD),
+    .RxData(RxData)
 );
 endmodule
