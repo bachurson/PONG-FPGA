@@ -1,0 +1,4 @@
+sv work ../../rtl/vga/vga_pkg.sv \
+        ../../rtl/vga/vga_timing.sv \
+        ../../rtl/vga/vga_if.sv \
+        vga_timing_tb.sv

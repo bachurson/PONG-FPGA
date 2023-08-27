@@ -1,0 +1,2 @@
+sv work ../../rtl/uart/TxD.sv \
+        uart_tx_tb.sv

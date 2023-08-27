@@ -1,247 +1,160 @@
-# uec2_example_project_RnD
+# UEC2_PONG_PROJECT
 
-## Klonowanie repozytorium
+
+# About the project PONG
+
+Welcome to our GitHub repository for our classic Pong game project! In this project, we've taken the traditional Pong game and added several exciting new features to enhance the gameplay experience. Our implementation is written in SystemVerilog and utilizes the Basys 3 FPGA development board.
+
+Project Highlights
+Our project is centered around the classic Pong game but with a twist. We've designed three distinct gameplay modes, each offering a unique and engaging experience. Gameplay modes are set by 1-3 switches on board.
+
+1. Single-Player Mode with challenging AI.
+* The first gameplay mode features a single-player experience with a challenging AI opponent. We've crafted the AI to provide a tough challenge, yet it's beatable with skillful play. This mode is perfect for improving your Pong skills.
+
+2. Multiplayer Mode for intense battles.
+* In addition to the single-player mode, we've also implemented a thrilling multiplayer mode. Grab a friend who also has a Basys 3 FPGA board, and you can enjoy head-to-head Pong matches. Compete against each other to see who's the ultimate Pong champion!
+
+3. Innovative racket control using distance sensor.
+* One of the standout features of our game is the ability to control your racket using the HCSR04 distance sensor. As you move closer or farther from the sensor, your racket will respond accordingly. This unique control mechanism adds an extra layer of excitement and challenge to the game.
+
+## Technical Details
+We've ensured that our game not only delivers engaging gameplay but also incorporates interesting technical aspects:
+
+UART Communication: Control of the rackets and transmission of match scores are facilitated through UART communication protocols.
+
+Physics and Gameplay: The game physics are thoughtfully designed. Ball-to-wall collisions adhere to real-world physics principles, while ball-to-racket collisions are influenced by controlled randomness. By hitting the ball at the edge of the racket, players can increase the ball's speed and make its trajectory less predictable.
+
+Winning the Match
+The objective of the game is to reach a score of 9 points. Points are scored when the ball goes beyond the opponent's racket and hits the edge of the screen. Be strategic in your gameplay to outsmart your opponent and secure victory!
+
+Visuals and Hardware Setup
+The game's visuals are displayed on a monitor using a VGA connection, with a refresh rate of 60Hz and a resolution of 1024 x 768. To set up the hardware correctly, refer to the constraints and find .xdc file to connect to the appropriate port configurations for the Basys 3 board, as detailed in the Basys 3 Reference Manual. https://digilent.com/reference/_media/basys3:basys3_rm.pdf
+
+## Video Demonstration (In Polish)
+For a comprehensive demonstration of our project's functionality, we've prepared a video in the Polish language. In this video, you'll see the game in action and gain insights into its features and controls. You can watch the video by following the link here
+
+.
+
+# How to use the available scripts
+
+## Cloning the Repository
 
 ```bash
 git clone git@github.com:agh-riscv/uec2_lab1
 ```
 
-**Wszystkie komendy należy wywoływać z głównego folderu projektu** (w tym wypadku `uec2_lab1`).\
-_Każdy plik w projekcie posiada nagłówek z krótkim opisem jego funkcji._
+**All commands should be executed from the main project folder** 
 
-## Inicjalizacja środowiska
+## Initializing the Environment
 
-Aby rozpocząć pracę z projektem, należy uruchomić terminal w folderze projektu i zainicjalizować środowisko:
+To start working with the project, open a terminal in the project folder and initialize the environment:
 
 ```bash
 . env.sh
 ```
 
-Następnie, pozostając w głównym folderze, można wywoływać dostępne narzędzia:
+After that, while remaining in the main folder, you can execute available tools:
 
 * `run_simulation.sh`
 * `generate_bitstream.sh`
 * `program_fpga.sh`
 * `clean.sh`
 
-Narzędzia te zostały opisane poniżej.
+These tools are described below.
 
-## Uruchamianie symulacji
+## Running Simulations
 
-Symulacje uruchamia się skryptem `run_simulation.sh`.
+Simulations are launched using the `run_simulation.sh`.
 
-### Przygotowanie testu
 
-Aby skrypt poprawnie uruchomił symulacje, zawrtość testu musi zostać przygotowana zgodnie z poniższym opisem:
+### Available Options for `run_simulation.sh`
 
-* w folderze `sim` należy utworzyć folder, którego nazwa będzie nazwą testu
-* w folderze testu należy umieścić:
-  * plik o tej samej nazwie, co nazwa testu, z rozszerzeniu `.prj`
-  * plik o tej samej nazwie, co nazwa testu, z dopiskiem `_tb.sv`
-
-Przykładowa struktura:
-
-```text
-├── sim
-│   ├── and2
-│   │   ├── and2.prj
-│   │   ├── and2_tb.sv
-│   │   └── jakis_pomocniczy_modul_do_symulacji.v
-```
-
-W pliku `.prj` należy umieścić ścieżki do plików zawierających moduły używane w symulacji. Ścieżki te muszą zostać podane względem lokalizacji pliku `.prj`. Przykładowa zawartość pliku `.prj` wygląda następująco:
-
-```properties
-sv      work  and2_tb.sv \
-              ../../rtl/and2.sv
-verilog work  jakis_pomocniczy_modul_do_symulacji.v
-vhdl    work  ../../rtl/jakis_modul_w_vhdl.vhd
-```
-
-* pierwsze słowo określa język, w ktorym napisano moduł
-* drugie - bibliotekę (tutaj należy zostawić `work`)
-* trzecie i kolejne - ścieżki do plików (w przypadku vhdl należy podawać po jednym pliku na linię).
-
-Jeśli któryś z modułów importuje pakiet (_package_), to ścieżka do pakietu powinna pojawić się na liście przed ścieżkami do modułów.
-
-Jeśli w symulowanych modułach znajdują się bloki IP, to do pliku `.prj` należy dopisać poniższą linijkę:
-
-```properties
-verilog work ../common/glbl.v
-```
-
-W pliku `<nazwa_testu>_tb.sv` należy napisać moduł testowy. Nazwa modułu musi być taka sama, jak nazwa testu. (W ogóle należy przyjąć zasadę, że nazwa pliku powinna być identyczna jak nazwa modułu, który w nim zdefiniowano.)
-
-### Dostępne opcje skryptu `run_simulation.sh`
-
-* Wyświetlenie listy dostępnych testów
+* Display a list of available tests:
 
   ```bash
   run_simulation.sh -l
   ```
 
-* Uruchamianie symulacji w trybie tekstowym
+* Run simulations in text mode:
 
   ```bash
   run_simulation.sh -t <nazwa_testu>
   ```
 
-* Uruchamianie symulacji w trybie graficznym
+* Run simulations in graphical mode:
 
   ```bash
   run_simulation.sh -gt <nazwa_testu>
   ```
 
-* Uruchamianie wszystkich symulacji
+* Run all simulations:
 
   ```bash
   run_simulation.sh -a
   ```
 
-  W tym trybie, po kolei uruchamiane są wszystkie symulacje dostępne w folderze `sim`, a w terminalu wyświetlana jest informacja o ich wyniku:
-
-  * PASSED - jeśli nie wykryto żadnych błędów,
-  * FAILED - jeśli podczas symulacji wykryto błędy (w logu przynajmniej raz pojawiło się słowo _error_).
-
-  Aby test działał poprawnie, należy w testbenchu stosować **asercje**, które w przypadku niespełnienia warunku zwrócą `$error`.
-
-## Generowanie bitstreamu
+## Generating Bitstream
 
 ```bash
 generate_bitstream.sh
 ```
 
-Skrypt ten uruchamia generację bitstreamu, który finalnie znajdzie się w folderze `results`. Następnie sprawdza logi z syntezy i implementacji pod kątem ewentualnych ostrzeżeń (_warning_, _critical warning_) i błędów (_error_), a w razie ich wystąpienie kopiuje ich treść do pliku `results/warning_summary.log`
+This script initiates the generation of the bitstream, which will ultimately be located in the  `results` folder. It then checks synthesis and implementation logs for any warnings or errors and copies their content to the `results/warning_summary.log` file if they occur.
 
-## Wgrywanie bitstreamu do Basys3
+## Programming the Basys3 FPGA with Bitstream
 
 ```bash
 program_fpga.sh
 ```
 
-Aby skrypt poprawnie wgrał bitstream do FPGA, w folderze `results` musi znajdować się **tylko jeden** plik z rozszerzeniem `.bit`.
+To successfully program the FPGA with a bitstream, the  `results` folder must contain **only one** file with the `.bit` extension.
 
-## Sprzątanie projektu
+## Cleaning the Project
 
 ```bash
 clean.sh
 ```
 
-Zadaniem tego skryptu jest usunięcie wszystkich plików tymczasowych wygenerowanych wskutek działania narzędzi. Pliki te muszą być wymienione w `.gitignore`, a w projekcie musi być zainicjalizowane repozytorium git (inicjalizację tę wykonuje `env.sh`).
+The purpose of this script is to remove all temporary files generated by the tools. These files must be listed in `.gitignore`, and the project must have a initialized git repository (which is done by  `env.sh`).
 
-Ponadto, skrypty do symulacji oraz generacji bitstreamu, przy każdym ich uruchomieniu (o ile w projekcie zainicjalizowane jest repozytorium git), kasują wyniki poprzednich operacji przed uruchomieniem nowych.
+Additionally, the simulation and bitstream generation scripts, whenever executed (assuming the project has a git repository initialized), delete the results of previous operations before launching new ones.
 
-## Uruchamianie projektu w Vivado w trybie graficznym
+## Running the Project in Vivado GUI Mode
 
-Aby otworzyć w Vivado w trybie graficznym zbudowany projekt (tzn. po zakończeniu działania `generate_bitstream.sh`), należy przejść do folderu `fpga/build` i wywołać w nim komendę:
+To open the built project in Vivado GUI mode (i.e., after executing `generate_bitstream.sh`), navigate to the `fpga/build` folder and execute the following command within it:
 
 ```bash
 vivado <nazwa_projektu>.xpr
 ```
 
-## W razie niepowodzenia symulacji lub generacji bitstreamu
+## In Case of Simulation or Bitstream Generation Failure
 
-Jeśli symulacja lub generacji bitstreamu nie przebiega poprawnie, należy szukać przyczyny czytając w terminalu log, ze szczególnym uwzględnieniem linijek zawierających _ERROR_. Często najcenniejszą informację znajdziemy szukając pierwszego wystąpienia _ERROR_a.
+If simulation or bitstream generation fails, the reason can often be found by reading the terminal log, paying particular attention to lines containing ERROR. Often, the most valuable information can be found by looking for the first occurrence of an ERROR.
 
-Jeśli po uruchomienie narzędzia, w terminalu wyświetla się:
+If, after executing a tool, you see the following in the terminal:
 
 ```bash
 Vivado%
 ```
 
-oznacza to, że skrypt poprawnie uruchomił Vivado w trybie tekstowym, ale prawdopodobnie wystąpił błąd w plikach źródłowych, lub w ogóle ich nie znaleziono. Aby zamknąć Vivado wystarczy wpisać w terminalu
+This indicates that the script has successfully launched Vivado in text mode. However, there may be an issue with source files or they might not be found. To exit Vivado, simply enter the following in the terminal:
 
 ```tcl
 exit
 ```
 
-Jeśli uważne przeglądnięcie logów nie przyniosło rozwiązania, można spróbować, zamiast zamykania Vivado, uruchomić tryb graficzny i przeglądnąć widzianą przez program zawartość projektu. Wówczas, widząc napis `Vivado%`, należy wpisać w terminalu:
+If a thorough review of the logs did not yield a solution, you can try launching the graphical mode instead of closing Vivado. In this case, when you see `Vivado%` in the terminal, enter:
 
 ```tcl
 start_gui
 ```
 
-Jeśli potrzebujemy ptrzerwać uruchomiony proces, możemy skorzytać z kombinacji <kbd>Ctrl</kbd>+<kbd>C</kbd>.
-
-## Struktura projektu
-
-Poniżej przedstawiono hierarchię plików w projekcie. Aby wszystkie narzędzia działały poprawnie, należy jej przestrzegać.
-
-```text
-.
-├── env.sh                         - konfiguracja środowiska
-├── fpga                           - pliki związane z FPGA
-│   ├── constraints                - * pliki xdc
-│   │   └── top_vga_basys3.xdc
-│   ├── rtl                        - * syntezowalne pliki związane z FPGA
-│   │   └── top_vga_basys3.sv      - * * moduł instancjonujący nadrzędny moduł projektu rtl/top* oraz bloki
-│   │                                    specyficzne dla FPGA (np. bufory lub sentezator częstotliwości zegara)
-│   └── scripts                    - * skrypty tcl (uruchamiane odpowiednimi narzędziami z tools)
-│       ├── generate_bitstream.tcl
-│       ├── program_fpga.tcl
-│       └── project_details.tcl    - * * informacje o nazwie projektu, module top i plikach do syntezy
-├── README.md                      - ten plik
-├── results                        - pliki wynikowe generacji bitstreamu
-│   ├── top_vga_basys3.bit         - * bitstream
-│   └── warning_summary.log        - * podsumowanie ostrzeżeń i błędów
-├── rtl                            - syntezowalne pliki projektu (niezależne od FPGA)
-│   ├── draw_bg.sv
-│   ├── top_vga.sv                 - * moduł nadrzędny (top)
-│   ├── vga_pkg.sv                 - * pakiet zawierający stałe używane w projekcie
-│   └── vga_timing.sv
-├── sim                            - folder z testami
-│   ├── common                     - * pliki wspólne dla wielu testów
-│   │   └── glbl.v                 - * * plik potrzebny do symulacji z IP corami; tworzony przy wywołaniu env.sh
-│   │   └── tiff_writer.sv
-│   ├── top_fpga                   - * folder pojedynczego testu
-│   │   ├── top_fpga.prj           - * * lista plików z modułami używanymi w teście
-│   │   └── top_fpga_tb.sv         - * * kod testbenchu
-│   ├── top_vga
-│   │   ├── top_vga.prj
-│   │   └── top_vga_tb.sv
-│   └── vga_timing
-│       ├── vga_timing.prj
-│       └── vga_timing_tb.sv
-└── tools                          - narzędzia do pracy z projektem
-    ├── clean.sh                   - * czyszczenie plików tymczasowych
-    ├── generate_bitstream.sh      - * generacja bitstreamu (uruchamia też warning_summary.sh)
-    ├── program_fpga.sh            - * wgrywanie bitstreamu do FPGA
-    ├── run_simulation.sh          - * uruchamianie symulacji
-    ├── sim_cmd.tcl                - * komedy tcl używane przez run_simulation.sh (nie należy wywoływać samodzielnie)
-    └── warning_summary.sh         - * filtrowanie ostrzeżeń i błędów z generacji bitstreamu (wynik w results)
-```
+To interrupt a running process, you can use the <kbd>Ctrl</kbd>+<kbd>C</kbd> combination.
 
 ### Folder **fpga**
 
-W tym folderze znajdują się pliki powiązane stricte z FPGA. Plik `fpga/rtl/top_*_basys3.sv` zawiera instancję funkcjonalnego topa projektu (`rtl/top*.sv`) oraz bloki IP specyficzne dla FPGA. Pozwala również zrealizować mapowanie funkcjonalnych portów projektu na fizyczne wyprowadzenia na PCB, np:
-
-```sv
-.rst(btnC),
-.ready(led[0])
-```
-
-W pliku `fpga/scripts/project_details.tcl` należy podać nazwę projektu, nazwę głównego modułu (top fpga) oraz ścieżki do wszystkich plików zawierających moduły używane do syntezy. Ścieżki te należy podawać **względem lokalizacji folderu `fpga`** (a nie względem pliku _.tcl_).
+This folder contains files strictly related to the FPGA. The file  `fpga/rtl/top_pong_basys3.sv` contains an instance of the functional project's top (`rtl/top_pong.sv`) as well as FPGA-specific IP blocks. It also facilitates mapping functional project ports to physical connections on the PCB.
 
 ### Folder **rtl**
 
-Tutaj znajdują się syntezowalne pliki projektu, nie powiązane bezpośrednio z FPGA. Wśród nich znajduje się moduł nadrzędny (_top_), który powinien mieć budowę wyłącznie strukturalną (tzn. powinien zawierać instancje modułów podrzędnych i łączyć je ze sobą _wire_-ami, a nie powinien zawierać żadnych bloków _always_). W miarę przybywania plików w folderze `rtl`, warto rozważyć utworzenie podfolderów w celu grupowania powiązanych ze sobą tematycznie plików.
-
-## Weryfikacja poprawności napisanego kodu
-
-Do sprawdzenia poprawności napisanego kodu w języku SystemVerilog na serwerze studenckim i stacjach roboczych w laboratorium P014 należy skorzystać ze skonfigorwanego w tym celu narzędzia _Cadence HDL analysis and lint tool (HAL)_.
-
-Aby sprawdzić kod pod kątem syntezy należy wywołać polecenie:
-
-```
-hal_mtm_rtl.sh <ścieżki do sprawdzanego pliku i plików zależnych>
-```
-
-Aby sprawdzić kod pod kątem symulacji należy wywołać polecenie:
-
-```
-hal_mtm_tb.sh <ścieżki do sprawdzanego pliku i plików zależnych>
-```
-
-Podobnie jak w pliku `.prj`, pliki pakietów należy podawać jako pierwsze.
-
-Wynik analizy prezentowany jest w terminalu, a pełny log dostępny jest w pliku `xrun.log`
+This is where the synthesizable project files are located, not directly related to the FPGA. Among them is the top-level module, which has a purely structural design (meaning it contains instances of submodules and connects them with wire connections).

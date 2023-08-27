@@ -1,0 +1,2 @@
+sv work ../../rtl/sensor/sensor.sv \
+        sensor_tb.sv

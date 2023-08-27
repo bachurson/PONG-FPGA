@@ -1,0 +1,4 @@
+sv work ../../rtl/ball/random.sv \
+        ../../rtl/vga/vga_pkg.sv \
+        ../../rtl/ball/ball_ctl.sv \
+        ball_ctl_tb.sv
