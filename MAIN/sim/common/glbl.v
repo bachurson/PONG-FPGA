@@ -1,7 +1,8 @@
+`timescale 1ns / 1ps
 // $Header: /devl/xcs/repo/env/Databases/CAEInterfaces/verunilibs/data/glbl.v,v 1.14 2010/10/28 20:44:00 fphillip Exp $
 `ifndef GLBL
 `define GLBL
-`timescale  1 ps / 1 ps
+
 
 module glbl ();
 

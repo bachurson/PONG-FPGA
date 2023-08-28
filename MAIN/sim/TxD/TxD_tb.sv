@@ -19,16 +19,19 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module uart_tx_tb;
+`timescale 1ns / 1ps
+
+module TxD_tb;
     logic clk, rst, transmit_btn;
-    logic [7:0] data;
+    logic [3:0] data;
     logic TxD;
 
     TxD dut (
         .clk(clk),
         .rst(rst),
-        .transmit_btn(transmit_btn),
-        .data(data),
+        .flag_transmit(transmit_btn), 
+        .points_first_player(data),   
+        .points_second_player(data), 
         .TxD(TxD)
     );
 
@@ -67,10 +70,10 @@ module uart_tx_tb;
         $display("Transmit button released");
         
         #10000000;
-        
 
         $finish; 
     end
+
 
     always @(posedge clk) begin
     	if(dut.bit_counter_nxt != dut.bit_counter)

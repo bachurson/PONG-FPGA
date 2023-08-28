@@ -25,13 +25,15 @@ module sensor_tb;
     logic clk;
     logic rst;
     logic trig;
-
+    logic [7:0] distance;
+    
     // Instantiate the DUT
     sensor dut (
         .clk(clk),
         .rst(rst),
         .trig(trig),
-        .echo(echo)
+        .echo(echo),
+        .distance(distance)
     );
 
     // Clock generator (65MHz)
@@ -49,7 +51,7 @@ module sensor_tb;
         $monitor("Time=%t, trig=%b", $realtime, trig);
 
  
-        #1000000;
+        #100000000;
         $finish;
     end
 

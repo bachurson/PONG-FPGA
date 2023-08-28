@@ -24,9 +24,10 @@ module ball_ctl_tb;
 logic clk;
 logic rst;
 logic [10:0] rect_y_pos;
+logic [10:0] rect2_y_pos;
 logic [3:0] random_4;
-logic [6:0] points_second_player;
-logic [6:0] points_first_player;
+logic [3:0] points_second_player;
+logic [3:0] points_first_player;
 // Outputs
 logic [10:0] xpos;
 logic [10:0] ypos;
@@ -36,11 +37,13 @@ ball_ctl dut (
     .clk(clk),
     .rst(rst),
     .rect_y_pos(rect_y_pos),
+    .rect2_y_pos(rect2_y_pos),
     .points_second_player(points_second_player),
     .points_first_player(points_first_player),
     .random_4(random_4),
     .xpos(xpos),
-    .ypos(ypos)
+    .ypos(ypos),
+    .score_flag(score_flag)
 );
 
 // Random number for ypos
@@ -67,21 +70,19 @@ initial begin
     // Reset
     #10 rst = 0;
 
-
 end
 
-// Display changes
 logic [31:0] xpos_prev;
 logic [2:0] dut_state_prev;
 
-always_ff@(posedge clk) begin
+always_ff @(posedge clk) begin
     if (xpos != xpos_prev) begin
-        $display("xpos = %d, ypos = %d, state = %b, time = %0t,points_first_player = %d, points_second_player = %d", xpos, ypos, dut.state,  $realtime,points_first_player, points_second_player);
+        $display("xpos = %d, ypos = %d, state = %b, time = %0t, points_first_player = %d, points_second_player = %d", xpos, ypos, dut.state, $realtime, points_first_player, points_second_player);
     end
     xpos_prev <= xpos;
     dut_state_prev <= dut.state;
-    if ( (xpos == 1024 || xpos == 0) && dut.state != dut_state_prev ) begin
-        $display("xpos = %d, ypos = %d, state = %b, time = %0t,points_first_player = %d, points_second_player = %d", xpos, ypos, dut.state,  $realtime,points_first_player, points_second_player);
+    if ((xpos == 1024 || xpos == 0) && dut.state != dut_state_prev) begin
+        $display("xpos = %d, ypos = %d, state = %b, time = %0t, points_first_player = %d, points_second_player = %d", xpos, ypos, dut.state, $realtime, points_first_player, points_second_player);
         $display("Simulation ended at time = %t", $realtime);
         $finish;
     end
